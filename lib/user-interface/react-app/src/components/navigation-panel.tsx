@@ -28,7 +28,7 @@ export default function NavigationPanel() {
           text: "Home",
           href: "/",
         },
-        {
+        /* {
           type: "section",
           text: "Chatbot",
           items: [
@@ -49,7 +49,7 @@ export default function NavigationPanel() {
               href: "/chatbot/models",
             },
           ],
-        },
+        }, */
       ];
       items.push(...adminAndWorkspaceManagerItems);
 
