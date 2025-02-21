@@ -61,7 +61,8 @@ function App() {
                     path="/"
                     element={
                       <Layout showHeader={true}>
-                        <Welcome />
+                        {/* <Welcome /> */}
+                        <Playground />
                       </Layout>
                     }
                   />

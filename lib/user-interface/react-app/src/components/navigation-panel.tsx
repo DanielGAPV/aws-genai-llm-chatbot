@@ -28,6 +28,13 @@ export default function NavigationPanel() {
           text: "Home",
           href: "/chatbot/playground",
         },
+        {
+          type: "link",
+          text: "Sessions",
+          href: "/chatbot/sessions",
+        },
+        { type: "link", text: "Dashboard", href: "/rag" },
+        { type: "link", text: "Workspaces", href: "/rag/workspaces" },
         /* {
           type: "section",
           text: "Chatbot",
@@ -65,7 +72,7 @@ export default function NavigationPanel() {
             ]
           : [];
 
-        items.push({
+        /* items.push({
           type: "section",
           text: "Retrieval-Augmented Generation (RAG)",
           items: [
@@ -84,11 +91,11 @@ export default function NavigationPanel() {
             ...crossEncodersItems,
             { type: "link", text: "Engines", href: "/rag/engines" },
           ],
-        });
+        }); */
       }
     }
 
-    if (userContext.userRoles.includes(UserRole.ADMIN)) {
+    /* if (userContext.userRoles.includes(UserRole.ADMIN)) {
       items.push({
         type: "section",
         text: "Admin",
@@ -110,7 +117,7 @@ export default function NavigationPanel() {
           external: true,
         }
       );
-    }
+    } */
 
     return items;
   });
