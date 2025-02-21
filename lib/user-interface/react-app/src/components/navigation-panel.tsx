@@ -26,7 +26,7 @@ export default function NavigationPanel() {
         {
           type: "link",
           text: "Home",
-          href: "/",
+          href: "/chatbot/playground",
         },
         /* {
           type: "section",
@@ -133,7 +133,7 @@ export default function NavigationPanel() {
     <SideNavigation
       onFollow={onFollow}
       onChange={onChange}
-      header={{ href: "/", text: CHATBOT_NAME }}
+      header={{ href: "/chatbot/playground", text: CHATBOT_NAME }}
       items={items.map((value, idx) => {
         if (value.type === "section") {
           const collapsed =
