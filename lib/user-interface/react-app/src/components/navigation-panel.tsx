@@ -33,8 +33,6 @@ export default function NavigationPanel() {
           text: "Sessions",
           href: "/chatbot/sessions",
         },
-        { type: "link", text: "Dashboard", href: "/rag" },
-        { type: "link", text: "Workspaces", href: "/rag/workspaces" },
         /* {
           type: "section",
           text: "Chatbot",
@@ -61,6 +59,13 @@ export default function NavigationPanel() {
       items.push(...adminAndWorkspaceManagerItems);
 
       if (appContext?.config.rag_enabled) {
+        items.push(
+          { type: "link", text: "Dashboard", href: "/rag" },
+          { type: "link", text: "Workspaces", href: "/rag/workspaces" },
+        )
+      }   
+
+      /* if (appContext?.config.rag_enabled) {
         const crossEncodersItems: SideNavigationProps.Item[] = appContext
           ?.config.cross_encoders_enabled
           ? [
@@ -72,7 +77,7 @@ export default function NavigationPanel() {
             ]
           : [];
 
-        /* items.push({
+        items.push({
           type: "section",
           text: "Retrieval-Augmented Generation (RAG)",
           items: [
@@ -91,8 +96,8 @@ export default function NavigationPanel() {
             ...crossEncodersItems,
             { type: "link", text: "Engines", href: "/rag/engines" },
           ],
-        }); */
-      }
+        });
+      } */
     }
 
     /* if (userContext.userRoles.includes(UserRole.ADMIN)) {

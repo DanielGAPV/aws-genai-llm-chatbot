@@ -21,7 +21,7 @@ import SemanticSearch from "./pages/rag/semantic-search/semantic-search";
 import RssFeed from "./pages/rag/workspace/rss-feed";
 import WorkspacePane from "./pages/rag/workspace/workspace";
 import Workspaces from "./pages/rag/workspaces/workspaces";
-import Welcome from "./pages/welcome";
+/* import Welcome from "./pages/welcome"; */
 import "./styles/app.scss";
 import SessionPage from "./pages/chatbot/sessions/sessions";
 import Applications from "./pages/admin/applications/applications";
