@@ -905,6 +905,7 @@ export default function ChatInputPanel(props: ChatInputPanelProps) {
               }
             >
               <Select
+                readOnly
                 data-locator="select-model"
                 disabled={props.running}
                 statusType={state.modelsStatus}
