@@ -102,7 +102,7 @@ export default function ChatInputPanel(props: ChatInputPanelProps) {
     useSpeechRecognition();
   const [state, setState] = useState<ChatInputState>({
     value: "",
-    selectedModel: {label: 'anthropic.claude-3-5-sonnet-20241022-v2:0', value: 'bedrock::anthropic.claude-3-5-sonnet-20241022-v2:0'},
+    selectedModel: null,
     selectedModelMetadata: null,
     selectedWorkspace: workspaceDefaultOptions[0],
     modelsStatus: "loading",
@@ -283,8 +283,9 @@ export default function ChatInputPanel(props: ChatInputPanelProps) {
           }
 
           const models = modelsResult.data ? modelsResult.data.listModels : [];
-
-          const selectedModelOption = getSelectedModelOption(models);
+          
+          const defaultModel = {label: 'anthropic.claude-3-5-sonnet-20241022-v2:0', value: 'bedrock::anthropic.claude-3-5-sonnet-20241022-v2:0'}
+          const selectedModelOption = getSelectedModelOption(models, defaultModel.value);
           const selectedModelMetadata = getSelectedModelMetadata(
             models,
             selectedModelOption
