@@ -1,82 +1,131 @@
-# Building RAG use cases with GenAI Chatbot on AWS
+# Deploying the Chatbot on your local machine
 
-[![Release Notes](https://img.shields.io/github/v/release/aws-samples/aws-genai-llm-chatbot)](https://github.com/aws-samples/aws-genai-llm-chatbot/releases)
-[![GitHub star chart](https://img.shields.io/github/stars/aws-samples/aws-genai-llm-chatbot?style=social)](https://star-history.com/#aws-samples/aws-genai-llm-chatbot)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+## Environment setup
+If you are using a local machine, verify that your environment satisfies the following prerequisites:
 
-[![Deploy with GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://aws-samples.github.io/aws-genai-llm-chatbot/guide/deploy.html#deploy-with-github-codespaces)
+You have:
 
-[![Full Documentation](https://img.shields.io/badge/Full%20Documentation-blue?style=for-the-badge&logo=Vite&logoColor=white)](https://aws-samples.github.io/aws-genai-llm-chatbot/)
+1. An AWS Account
+2. An IAM User with **AdministratorAccess** policy granted (for production, it's recommended to restrict access as needed)
+3. [NodeJS 18 or 20](https://nodejs.org/en/download/) installed
+4. [AWS CLI](https://aws.amazon.com/cli/) installed and configured to use with your AWS account
+5. [AWS CDK CLI](https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html) installed
+6. [Docker](https://docs.docker.com/get-docker/) installed
+    - N.B. [`buildx`](https://github.com/docker/buildx) is also required. For Windows and macOS `buildx` is included in [Docker Desktop](https://docs.docker.com/desktop/)
+7. [Python 3+](https://www.python.org/downloads/) installed
 
-![sample](docs/about/assets/chabot-sample.gif "GenAI Chatbot on AWS")
+## Deployment
+Before you start, please read the [precautions](docs/documentation/precautions.md) and [security](docs/documentation/security.md) pages.
 
+**Step 1.** Clone the repository.
+```bash
+git clone https://github.com/DanielGAPV/aws-genai-llm-chatbot-for-ttf.git
+```
 
-## 🚀 NEW! Support for new Amazon Nova Models 🚀
-### Deploy this chatbot to use the recently announced [Amazon Nova models](https://aws.amazon.com/blogs/aws/introducing-amazon-nova-frontier-intelligence-and-industry-leading-price-performance/)!
-### These powerful models can __understand__ and __generate__ images and videos.
+**Step 2.** Move into the cloned repository.
+```bash
+cd aws-genai-llm-chatbot-for-ttf
+```
 
-Deploy this chatbot to experiment with:
-- `Amazon Nova Micro`
-- `Amazon Nova Lite`
-- `Amazon Nova Pro`
-- `Amazon Nova Canvas`
-- `Amazon Nova Reels`
+**Step 3.** Install the project dependencies and build the project.
+```bash
+npm ci && npm run build
+```
 
+**Step 4.** (Optional) Run the unit tests.
+```bash
+npm run test && pip install -r pytest_requirements.txt && pytest tests
+```
 
+**Step 5.** Once done, run the configuration command to help you set up the solution with the features you need
+```bash
+npm run config
+```
 
-Make sure to request access to the new models [here](https://aws-samples.github.io/aws-genai-llm-chatbot/documentation/model-requirements.html#amazon-bedrock-requirements)
+You'll be prompted to configure the different aspects of the solution, such as:
+- The LLMs or MLMs to enable (supports all models provided by Bedrock that [were enabled](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html) along with SageMaker hosted Idefics, FalconLite, Mistral, etc.).
+- Setup of the RAG system: engine selection (i.e. Aurora w/ pgvector, OpenSearch, Kendra).
+- Embeddings selection.
+- Limit accessibility to website and backend to VPC (private chatbot).
+- Add existing Amazon Kendra indices as RAG sources.
 
-Read more about the new models [here](https://www.aboutamazon.com/news/aws/amazon-nova-artificial-intelligence-bedrock-aws)
+For more details about the options, please refer to the [configuration page](docs/guide/config.md)
 
----
+When done, answer `Y` to create or update your configuration.
 
+![sample](docs/guide/assets/magic-config-sample.gif "CLI sample")
 
-This solution provides ready-to-use code so you can start **experimenting with a variety of Large Language Models and Multimodal Language Models, settings and prompts** in your own AWS account.
+Your configuration is now stored under `bin/config.json`. You can re-run the `npm run config` command as needed to update your `config.json`
 
-Supported model providers:
+**Step 6.** (Optional) Bootstrap AWS CDK on the target account and region
 
-- [Amazon Bedrock](https://aws.amazon.com/bedrock/) which supports a wide range of models from AWS, Anthropic, Cohere and Mistral including the latest models from Amazon Nova. See [Recent announcements](https://aws.amazon.com/blogs/aws/introducing-amazon-nova-frontier-intelligence-and-industry-leading-price-performance/) for more details.
-- [Amazon SageMaker](https://aws.amazon.com/sagemaker/) self-hosted models from Foundation, Jumpstart and HuggingFace.
-- Third-party providers via API such as Anthropic, Cohere, AI21 Labs, OpenAI, etc. [See available langchain integrations](https://python.langchain.com/docs/integrations/llms/) for a comprehensive list.
+> **Note**: This is required if you have never used AWS CDK on this account and region combination. ([More information on CDK bootstrapping](https://docs.aws.amazon.com/cdk/latest/guide/cli.html#cli-bootstrap)).
 
-# Additional Resources
+```bash
+npm run cdk bootstrap aws://{targetAccountId}/{targetRegion}
+```
 
-| Resource |Description|
-|:-------------|:-------------|
-| [Secure Messenger GenAI Chatbot](https://github.com/aws-samples/secure-messenger-genai-chatbot) | A messenger built on Wickr that can interface with this chatbot to provide Q&A service in tightly regulated environments (i.e. HIPAA). |
-| [Project Lakechain](https://github.com/awslabs/project-lakechain) | A powerful cloud-native, AI-powered, document (docs, images, audios, videos) processing framework built on top of the AWS CDK. |
-| [AWS Generative AI CDK Constructs](https://github.com/awslabs/generative-ai-cdk-constructs/) | Open-source library extension of the [AWS Cloud Development Kit (AWS CDK)](https://docs.aws.amazon.com/cdk/v2/guide/home.html)  aimed to help developers build generative AI solutions using pattern-based definitions for their architecture. |
-| [Artifacts and Tools for Bedrock](https://github.com/aws-samples/artifacts-and-tools-for-bedrock) | An innovative chat-based user interface with support for tools and artifacts. It can create graphs and diagrams, analyze data, write games, create web pages, generate files, and much more.  |
+You can now deploy by running:
 
-# Roadmap
+```bash
+npm run cdk deploy
+```
 
-Roadmap is available through the [GitHub Project](https://github.com/orgs/aws-samples/projects/69)
+> **Note**: This step duration can vary greatly, depending on the Constructs you are deploying.
 
-# Authors
+You can view the progress of your CDK deployment in the [CloudFormation console](https://console.aws.amazon.com/cloudformation/home) in the selected region.
 
-- [Bigad Soleiman](https://www.linkedin.com/in/bigadsoleiman/)
-- [Sergey Pugachev](https://www.linkedin.com/in/spugachev/)
+**Step 7.** Once deployed, take note of the `User Interface`, `User Pool` and, if you want to interact with 3P models providers, the `Secret` where to store `API_KEYS` to access 3P model providers.
 
-# Contributors
-[![contributors](https://contrib.rocks/image?repo=aws-samples/aws-genai-llm-chatbot&max=2000)](https://github.com/aws-samples/aws-genai-llm-chatbot/graphs/contributors)
+```bash
+...
+Outputs:
+GenAIChatBotStack.UserInterfaceUserInterfaceDomanNameXXXXXXXX = dxxxxxxxxxxxxx.cloudfront.net
+GenAIChatBotStack.AuthenticationUserPoolLinkXXXXX = https://xxxxx.console.aws.amazon.com/cognito/v2/idp/user-pools/xxxxx_XXXXX/users?region=xxxxx
+GenAIChatBotStack.ApiKeysSecretNameXXXX = ApiKeysSecretName-xxxxxx
+...
+```
 
-# License
+**Step 8.** Open the generated **Cognito User Pool** Link from outputs above i.e. `https://xxxxx.console.aws.amazon.com/cognito/v2/idp/user-pools/xxxxx_XXXXX/users?region=xxxxx`
 
-This library is licensed under the MIT-0 License. See the LICENSE file.
+**Step 9.** Add a user that will be used to log into the web interface. 
 
-- [Changelog](CHANGELOG.md) of the project.
-- [License](LICENSE) of the project.
-- [Code of Conduct](CODE_OF_CONDUCT.md) of the project.
-- [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
+**Step 10.** Assign the admin role to the user.
 
-Although this repository is released under the  MIT-0 license, its front-end and SQL implementation use the following third party projects:
-- [psycopg2-binary](https://github.com/psycopg/psycopg2)
-- [jackspeak](https://github.com/isaacs/jackspeak)
-- [package-json-from-dist](https://github.com/isaacs/package-json-from-dist)
-- [path-scurry](https://github.com/isaacs/path-scurry)
+For more information, please refer to [the access control page](docs/documentation/access-control.md)
 
-These projects' licensing includes the LGPL v3 and  BlueOak-1.0.0 licenses.
+**Step 11.** Open the `User Interface` Url for the outputs above, i.e. `dxxxxxxxxxxxxx.cloudfront.net`.
 
-# Legal Disclaimer
+**Step 12.** Login with the user created in **Step 8** and follow the instructions.
 
-You should consider doing your own independent assessment before using the content in this sample for production purposes. This may include (amongst other things) testing, securing, and optimizing the content provided in this sample, based on your specific quality control practices and standards.
+**Step 13.** (Optional) Run the integration tests
+The tests require to be authenticated against your AWS Account because it will create cognito users. In addition, the tests will use `anthropic.claude-instant-v1` (Claude Instant), `anthropic.claude-3-haiku-20240307-v1:0` (Claude 3 Haiku), `amazon.titan-embed-text-v1` (Titan Embeddings G1 - Text) and `amazon.nova-canvas-v1:0` (Amazon Nova Canvas) which need to be enabled in Bedrock, 1 workspace engine and the SageMaker default models.
+
+To run the tests (Replace the url with the one you used in the steps above)
+```bash
+REACT_APP_URL=https://dxxxxxxxxxxxxx.cloudfront.net pytest integtests/ --ignore integtests/user_interface -n 3 --dist=loadfile 
+```
+To run the UI tests, you will fist need to download and run [geckodriver](https://github.com/mozilla/geckodriver)
+```bash
+REACT_APP_URL=https://dxxxxxxxxxxxxx.cloudfront.net pytest integtests/user_interface 
+```
+
+## Monitoring
+
+Once the deployment is complete, a [Amazon CloudWatch Dashboard](https://console.aws.amazon.com/cloudwatch) will be available in the selected region to monitor the usage of the resources.
+
+For more information, please refer to [the monitoring page](docs/documentation/monitoring.md)
+
+## Run user interface locally
+
+To experiment with changes to the the user interface, you can run the interface locally. See the instructions in the README file of the [`lib/user-interface/react-app`](lib/user-interface/react-app/README.md) folder.
+
+## Clean up
+
+You can remove the stacks and all the associated resources created in your AWS account by running the following command:
+
+```bash
+npx cdk destroy
+```
+
+> **Note**: Depending on which resources have been deployed. Destroying the stack might take a while, up to 45m. If the deletion fails multiple times, please manually delete the remaining stack's ENIs; you can filter ENIs by VPC/Subnet/etc using the search bar [here](https://console.aws.amazon.com/ec2/home#NIC) in the AWS console) and re-attempt a stack deletion.
