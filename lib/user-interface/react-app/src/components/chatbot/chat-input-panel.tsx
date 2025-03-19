@@ -284,7 +284,7 @@ export default function ChatInputPanel(props: ChatInputPanelProps) {
 
           const models = modelsResult.data ? modelsResult.data.listModels : [];
           
-          const defaultModel = {label: 'anthropic.claude-3-5-sonnet-20241022-v2:0', value: 'bedrock::anthropic.claude-3-5-sonnet-20241022-v2:0'}
+          const defaultModel = {label: 'apac.anthropic.claude-3-5-sonnet-20241022-v2:0', value: 'bedrock::apac.anthropic.claude-3-5-sonnet-20241022-v2:0'}
           const selectedModelOption = getSelectedModelOption(models, defaultModel.value);
           const selectedModelMetadata = getSelectedModelMetadata(
             models,

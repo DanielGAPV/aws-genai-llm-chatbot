@@ -36,7 +36,7 @@ export default function Chat(props: {
     () => ({
       streaming: true,
       showMetadata: false,
-      maxTokens: 512,
+      maxTokens: 1000,
       temperature: 0.6,
       topP: 0.9,
       images: null,
