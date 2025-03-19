@@ -19,12 +19,12 @@ Before you start, please read the [precautions](docs/documentation/precautions.m
 
 **Step 1.** Clone the repository.
 ```bash
-git clone https://github.com/DanielGAPV/aws-genai-llm-chatbot-for-ttf.git
+git clone https://github.com/DanielGAPV/aws-genai-llm-chatbot.git
 ```
 
 **Step 2.** Move into the cloned repository.
 ```bash
-cd aws-genai-llm-chatbot-for-ttf
+cd aws-genai-llm-chatbot.git
 ```
 
 **Step 3.** Install the project dependencies and build the project.
