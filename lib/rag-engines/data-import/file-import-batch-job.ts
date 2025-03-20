@@ -38,7 +38,7 @@ export class FileImportBatchJob extends Construct {
       {
         vpc: props.shared.vpc,
         replaceComputeEnvironment: true,
-        updateTimeout: cdk.Duration.minutes(30),
+        updateTimeout: cdk.Duration.minutes(60),
         updateToLatestImageVersion: true,
       }
     );
@@ -102,7 +102,7 @@ export class FileImportBatchJob extends Construct {
 
     const fileImportJob = new batch.EcsJobDefinition(this, "FileImportJob", {
       container: fileImportContainer,
-      timeout: cdk.Duration.minutes(30),
+      timeout: cdk.Duration.minutes(60),
       retryAttempts: 3,
       retryStrategies: [
         batch.RetryStrategy.of(
