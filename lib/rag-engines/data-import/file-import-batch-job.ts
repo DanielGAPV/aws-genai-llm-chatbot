@@ -102,7 +102,7 @@ export class FileImportBatchJob extends Construct {
 
     const fileImportJob = new batch.EcsJobDefinition(this, "FileImportJob", {
       container: fileImportContainer,
-      timeout: cdk.Duration.minutes(60),
+      timeout: cdk.Duration.minutes(120),
       retryAttempts: 3,
       retryStrategies: [
         batch.RetryStrategy.of(
