@@ -24,20 +24,21 @@ prompts = {
     "en": {
         # Prompt for answering questions using provided context
         "qa_prompt": (
-            "Use the following pieces of context to answer the question at the end. "
-            "If you don't know the answer, just say that you don't know, don't try "
-            "to make up an answer."
+            """Hãy sử dụng các phần ngữ cảnh sau để trả lời câu hỏi ở cuối. Nếu bạn không biết câu trả lời, chỉ cần nói rằng bạn không biết - đừng tự suy diễn hay bịa ra. Một số thuật ngữ cần lưu ý:
+- 'NVL': Nguyên vật liệu gỗ.
+- 'Planned Price 1': Giá dự kiến."""
         ),
         # Prompt for conversational interaction between a human and AI
         "conversation_prompt": (
-            "The following is a friendly conversation between a human and an AI. "
-            "If the AI does not know the answer to a question, it truthfully says "
-            "it does not know."
+            """Sau đây là cuộc trò chuyện thân thiện giữa con người và AI. Nếu AI không biết câu trả lời cho một câu hỏi, nó sẽ thành thật nói rằng nó không biết. Một số thuật ngữ cần lưu ý:
+- 'NVL': Nguyên vật liệu gỗ.
+- 'Planned Price 1': Giá dự kiến."""
         ),
         # Prompt for rephrasing a follow-up question to be a standalone question
         "condense_question_prompt": (
-            "Given the following conversation and a follow up"
-            " question, rephrase the follow up question to be a standalone question."
+            """Với cuộc trò chuyện sau và một câu hỏi tiếp theo, hãy diễn đạt lại câu hỏi tiếp theo thành một câu hỏi độc lập. Một số thuật ngữ cần lưu ý: 
+- 'NVL': Nguyên vật liệu gỗ.
+- 'Planned Price 1': Giá dự kiến."""
         ),
         "current_conversation_word": "Current conversation",
         "question_word": "Question",
