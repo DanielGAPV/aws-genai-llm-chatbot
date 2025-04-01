@@ -1,6 +1,8 @@
 import os
 import json
 import uuid
+import boto3
+import asyncio
 from datetime import datetime
 from genai_core.registry import registry
 from aws_lambda_powertools import Logger, Tracer
@@ -13,6 +15,10 @@ from aws_lambda_powertools.utilities.typing import LambdaContext
 import adapters  # noqa: F401 Needed to register the adapters
 from genai_core.utils.websocket import send_to_client
 from genai_core.types import ChatbotAction
+from genai_core.langchain import DynamoDBChatMessageHistory
+
+from langchain_core.messages.ai import AIMessage
+from langchain_core.messages.human import HumanMessage
 
 processor = BatchProcessor(event_type=EventType.SQS)
 tracer = Tracer()
@@ -22,7 +28,12 @@ AWS_REGION = os.environ["AWS_REGION"]
 API_KEYS_SECRETS_ARN = os.environ["API_KEYS_SECRETS_ARN"]
 
 sequence_number = 0
-
+bedrock_agent_client=boto3.client(
+            service_name="bedrock-agent", region_name='ap-southeast-1'
+        )
+runtime_client=boto3.client(
+            service_name="bedrock-agent-runtime", region_name='ap-southeast-1'
+        )
 
 def on_llm_new_token(
     user_id, session_id, self, token, run_id, chunk, parent_run_id, *args, **kwargs
@@ -80,7 +91,7 @@ def handle_heartbeat(record):
     )
 
 
-def handle_run(record):
+async def handle_run(record):
     user_id = record["userId"]
     user_groups = record["userGroups"]
     data = record["data"]
@@ -97,32 +108,78 @@ def handle_run(record):
     if not session_id:
         session_id = str(uuid.uuid4())
 
-    adapter = registry.get_adapter(f"{provider}.{model_id}")
+    # adapter = registry.get_adapter(f"{provider}.{model_id}")
 
-    adapter.on_llm_new_token = lambda *args, **kwargs: on_llm_new_token(
-        user_id, session_id, *args, **kwargs
-    )
+    # adapter.on_llm_new_token = lambda *args, **kwargs: on_llm_new_token(
+    #     user_id, session_id, *args, **kwargs
+    # )
 
-    model = adapter(
-        model_id=model_id,
-        mode=mode,
+    # model = adapter(
+    #     model_id=model_id,
+    #     mode=mode,
+    #     session_id=session_id,
+    #     user_id=user_id,
+    #     model_kwargs=data.get("modelKwargs", {}),
+    # )
+
+    # response = model.run(
+    #     prompt=prompt,
+    #     workspace_id=workspace_id,
+    #     user_groups=user_groups,
+    #     images=images,
+    #     documents=documents,
+    #     videos=videos,
+    #     system_prompts=system_prompts,
+    # )
+
+    # logger.debug(response)
+
+    # send_to_client(
+    #     {
+    #         "type": "text",
+    #         "action": ChatbotAction.FINAL_RESPONSE.value,
+    #         "timestamp": str(int(round(datetime.now().timestamp()))),
+    #         "userId": user_id,
+    #         "userGroups": user_groups,
+    #         "data": response,
+    #     }
+    # )
+
+    #Get DynamoDB Sessions Table
+    chat_history = DynamoDBChatMessageHistory(
+        table_name=os.environ["SESSIONS_TABLE_NAME"],
         session_id=session_id,
         user_id=user_id,
-        model_kwargs=data.get("modelKwargs", {}),
     )
 
-    response = model.run(
-        prompt=prompt,
-        workspace_id=workspace_id,
-        user_groups=user_groups,
-        images=images,
-        documents=documents,
-        videos=videos,
-        system_prompts=system_prompts,
-    )
-
+    response = runtime_client.invoke_agent(
+            agentId='SWGKKAR9A5',
+            agentAliasId="RWNGZ3XZV4",
+            sessionId=session_id,
+            inputText=prompt,
+        )
+    
     logger.debug(response)
+    print("Agent response", response)
 
+    completion = ""
+
+    for event in response.get("completion"):
+        chunk = event["chunk"]
+        completion += chunk["bytes"].decode()
+    
+    print("Completion", completion)
+
+    #Add user prompt and chatbot response to DynamoDB
+    chat_history.add_message(HumanMessage(prompt))
+    chat_history.add_message(AIMessage(completion))
+    
+    response = {
+        "sessionId": session_id,
+        "type": "text",
+        "content": completion,
+    }
+    
     send_to_client(
         {
             "type": "text",
@@ -134,6 +191,8 @@ def handle_run(record):
         }
     )
 
+    """ return response """
+
 
 @tracer.capture_method
 def record_handler(record: SQSRecord):
@@ -144,7 +203,18 @@ def record_handler(record: SQSRecord):
     logger.info("details", detail=detail)
 
     if detail["action"] == ChatbotAction.RUN.value:
-        handle_run(detail)
+        data = asyncio.run(handle_run(detail))
+        print("data", data)
+        send_to_client(
+            {
+                "type": "text",
+                "action": ChatbotAction.FINAL_RESPONSE.value,
+                "userId": detail["userId"],
+                "userGroups": detail["userGroups"],
+                "timestamp": str(int(round(datetime.now().timestamp()))),
+                "data": data
+            }
+        )
     elif detail["action"] == ChatbotAction.HEARTBEAT.value:
         handle_heartbeat(detail)
 
