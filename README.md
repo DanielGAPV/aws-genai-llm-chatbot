@@ -17,6 +17,8 @@ You have:
 ## Deployment
 Before you start, please read the [precautions](docs/documentation/precautions.md) and [security](docs/documentation/security.md) pages.
 
+Make sure you have set up your AWS credentials with `aws configure`
+
 **Step 1.** Clone the repository.
 ```bash
 git clone https://github.com/DanielGAPV/aws-genai-llm-chatbot.git
