@@ -19,6 +19,17 @@ Before you start, please read the [precautions](docs/documentation/precautions.m
 
 Make sure you have set up your AWS credentials with `aws configure`
 
+```shell
+aws configure
+```
+
+```shell
+AWS Access Key ID [None]: <the access key from your IAM user>
+AWS Secret Access Key [None]: <the secret access key from your IAM user>
+Default region name: <the region you plan to deploy the solution to>
+Default output format: json
+```
+
 **Step 1.** Clone the repository.
 ```bash
 git clone https://github.com/DanielGAPV/aws-genai-llm-chatbot.git
